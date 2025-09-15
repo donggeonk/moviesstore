@@ -61,3 +61,12 @@ def delete_review(request, id, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     review.delete()
     return redirect('movies.show', id=id)
+
+def featured(request):
+    # Get the first movie from the database to feature
+    featured_movie = Movie.objects.first()
+
+    template_data = {}
+    template_data['title'] = 'Featured Movie'
+    template_data['movie'] = featured_movie
+    return render(request, 'movies/featured.html', {'template_data': template_data})

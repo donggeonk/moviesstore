@@ -70,3 +70,10 @@ def featured(request):
     template_data['title'] = 'Featured Movie'
     template_data['movie'] = featured_movie
     return render(request, 'movies/featured.html', {'template_data': template_data})
+
+
+@login_required
+def report_review(request, id, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    review.delete()
+    return redirect('movies.show', id=id)

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-3">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-8 mx-auto mb-3">
+        <h2>Movie Petitions</h2>
+        <hr />
+
+        <div class="card shadow p-3 mb-4 rounded">
+          <div class="card-body">
+            <h5 class="card-title">Create a New Petition</h5>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="title" class="form-label">Movie Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+              </div>
+              <div class="mb-3">
+                <label for="reason" class="form-label">Reason</label>
+                <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn bg-dark text-white">Submit Petition</button>
+            </form>
+          </div>
+        </div>
+
+        <h3 class="mt-5">Current Petitions</h3>
+        <hr/>
+        {% for petition in template_data.petitions %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">{{ petition.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Petition by: {{ petition.author.username }} on {{ petition.created_at|date:"F d, Y" }}</h6>
+            <p class="card-text">{{ petition.reason }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><b>Votes: {{ petition.get_vote_count }}</b></p>
+                <form action="{% url 'petitions:vote' petition.id %}" method="POST">
+                    {% csrf_token %}
+                    {% if petition.id in template_data.voted_petition_ids %}
+                        <button type="submit" class="btn btn-secondary">Remove Vote</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-success">Vote Yes</button>
+                    {% endif %}
+                </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
